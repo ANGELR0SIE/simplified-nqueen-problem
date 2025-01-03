@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <title>Dynamic Grid</title>
+</head>
+
+<body>
+    <h1>A Fun Grid Game!</h1>
+    <div>
+        <input type="number" id="size" placeholder="Enter grid size" min="3" value="8" />
+        <button onclick="createGrid()">Generate Grid</button>
+        <button id="infoBtn" class="bulb">💡</button>
+    </div>
+    <p id="instructions" style="display: none; margin-top: 10px; font-style: italic;">
+        Click on the grid cells to color them. You cannot color a cell if any other cell is colored in its diagonal,
+        horizontal, or vertical line. The goal is to color each cell in all rows.
+    </p>
+    <div class="grid" id="grid"></div>
+
+     <script>
+        let queens = [];
+
+        document.getElementById('infoBtn').addEventListener('click', () => {
+            const instructions = document.getElementById('instructions');
+            instructions.style.display = instructions.style.display === 'none' ? 'block' : 'none';
+        });
+
+        function createGrid() {
+            const size = document.getElementById('size').value;
+            const grid = document.getElementById('grid');
+            grid.innerHTML = '';
+            queens = [];
+            if (isNaN(size) || size <= 0) {
+                alert('Please enter a valid grid size');
+                return;
+            }
+
+            for (let i = 0; i < size; i++) {
+                const row = document.createElement('div');
+                row.className = 'grid-row';
+
+                for (let j = 0; j < size; j++) {
+                    const cell = document.createElement('div');
+                    cell.className = 'cell';
+                    cell.rowIndex = i; //store the index of  to rowIndex 
+                    cell.colIndex = j;
+
+                    cell.addEventListener('click', () => handleCellClick(cell, size));
+                    row.appendChild(cell);
+                }
+
+                grid.appendChild(row);
+            }
+        }
+
+        function handleCellClick(cell, size) {
+            const row = cell.rowIndex;
+            const col = cell.colIndex;
+
+            if (!isSafe(row, col)) return;
+            cell.classList.add('selected');
+            queens.push({ row, col });
+            disableInvalidCells(size);
+        }
+
+        function isSafe(row, col) {
+            return queens.every(q => q.row !== row && q.col !== col && Math.abs(q.row - row) !== Math.abs(q.col - col));
+        }
+
+        function disableInvalidCells(size) {
+            const grid = document.getElementById('grid');
+            const rows = grid.querySelectorAll('.grid-row');
+            for (let i = 0; i < size; i++) {
+                for (let j = 0; j < size; j++) {
+                    const cell = rows[i].children[j];
+                    if (!cell.classList.contains('selected') && !isSafe(i, j)) {
+                        cell.classList.add('disabled');
+                    }
+                }
+            }
+        }
+    </script> 
+
+
+     
+
+
+    </body>
+
+</html>
