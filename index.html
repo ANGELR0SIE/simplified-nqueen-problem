@@ -1,3 +1,6 @@
+
+
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -14,14 +17,16 @@
         <input type="number" id="size" placeholder="Enter grid size" min="3" value="8" />
         <button onclick="createGrid()">Generate Grid</button>
         <button id="infoBtn" class="bulb">💡</button>
+
     </div>
     <p id="instructions" style="display: none; margin-top: 10px; font-style: italic;">
         Click on the grid cells to color them. You cannot color a cell if any other cell is colored in its diagonal,
         horizontal, or vertical line. The goal is to color each cell in all rows.
     </p>
     <div class="grid" id="grid"></div>
+    <button onclick="clearGrid()" class="clear">Clear</button>
 
-     <script>
+    <script>
         let queens = [];
 
         document.getElementById('infoBtn').addEventListener('click', () => {
@@ -46,7 +51,7 @@
                 for (let j = 0; j < size; j++) {
                     const cell = document.createElement('div');
                     cell.className = 'cell';
-                    cell.rowIndex = i; //store the index of  to rowIndex 
+                    cell.rowIndex = i;
                     cell.colIndex = j;
 
                     cell.addEventListener('click', () => handleCellClick(cell, size));
@@ -55,6 +60,7 @@
 
                 grid.appendChild(row);
             }
+            document.querySelector('.clear').style.display = 'flex';
         }
 
         function handleCellClick(cell, size) {
@@ -83,12 +89,17 @@
                 }
             }
         }
-    </script> 
-
-
-     
-
-
-    </body>
+        document.querySelector('.clear').style.display = 'none';
+        function clearGrid() {
+           
+            const grid = document.getElementById('grid');
+            const cells = grid.querySelectorAll('.cell');
+            cells.forEach(cell => {
+                cell.classList.remove('selected', 'disabled');
+            });
+            queens = [];
+        }
+    </script>
+</body>
 
 </html>
